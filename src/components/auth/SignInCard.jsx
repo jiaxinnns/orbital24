@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import { useNavigate, Navigate, redirect } from "react-router-dom";
 import Cookies from "js-cookie";
+import axios from "axios";
+import axiosInstance from "../../axiosConfig";
 
 const supabase = createClient(
   import.meta.env.VITE_APP_SUPABASE_URL,
@@ -26,21 +28,30 @@ const SignInCard = () => {
   const navigate = useNavigate();
 
   const submitAction = handleSubmit(async (d) => {
+    // disable submit button
     setIsLoading(true);
+
+    // login logic
+    const e = getValues("email");
+    const p = getValues("password");
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: getValues("email"),
       password: getValues("password"),
     });
 
-    data && console.log(data);
+    // axios.get(`http://localhost:4000/api/signin/${hi}`).then(function (res) {
+    //   console.log(res);
+    // });
 
     const expirationTime = new Date(new Date().getTime() + 120000);
-    Cookies.set("auth", JSON.stringify(data), { expires: expirationTime });
+    Cookies.set("auth", JSON.stringify(response), { expires: expirationTime });
 
+    // login done / failed, enable submit button
     setIsLoading(false);
 
-    if (data != null) {
+    // navigate if login was successful
+    if (data) {
       navigate("/home");
     }
   });
@@ -57,7 +68,7 @@ const SignInCard = () => {
         flex 
         flex-col 
         gap-7 
-        mt-14"
+        mt-8"
               onSubmit={submitAction}
             >
               <label className="text-black-500 font-semibold">NUS Email</label>

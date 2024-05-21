@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 import { createClient } from "@supabase/supabase-js";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { Link as ChakraLink } from "@chakra-ui/react";
 
 import Home from "./user/Home";
@@ -14,6 +14,7 @@ const supabase = createClient(
 
 const Welcome = () => {
   const [session, setSession] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -42,7 +43,7 @@ const Welcome = () => {
       </div>
     );
   } else {
-    return <Home />;
+    navigate("/home");
   }
 };
 

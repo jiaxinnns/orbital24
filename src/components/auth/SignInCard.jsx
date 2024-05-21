@@ -45,7 +45,7 @@ const SignInCard = () => {
     // });
 
     const expirationTime = new Date(new Date().getTime() + 120000);
-    Cookies.set("auth", JSON.stringify(response), { expires: expirationTime });
+    Cookies.set("auth", JSON.stringify(data), { expires: expirationTime });
 
     // login done / failed, enable submit button
     setIsLoading(false);

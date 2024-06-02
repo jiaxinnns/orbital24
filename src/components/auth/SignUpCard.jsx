@@ -3,9 +3,11 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
-import { Card, CardBody, Stack, StackDivider } from "@chakra-ui/react";
-import { useNavigate, Navigate, redirect } from "react-router-dom";
+import { Card, CardBody, Stack, StackDivider, Toast } from "@chakra-ui/react";
+import { useNavigate, Navigate, redirect, Link } from "react-router-dom";
 import Select from "react-select";
+import toast, { Toaster } from "react-hot-toast";
+import { Link as ChakraLink, Text } from "@chakra-ui/react";
 
 const supabase = createClient(
   import.meta.env.VITE_APP_SUPABASE_URL,
@@ -113,10 +115,13 @@ const SignUpCard = () => {
     if (!response1.ok) {
       // Read the error response text
       const errorDetails = await response.text();
+      toast.error("Error Signing Up");
       // Throw an error with the HTTP status code and error details
       throw new Error(
         `HTTP error! Status: ${response.status}, Details: ${errorDetails}`
       );
+    } else {
+      toast.success("Successfully Signed Up! Please Sign In.");
     }
 
     console.log(response1);
@@ -126,6 +131,9 @@ const SignUpCard = () => {
 
   return (
     <div className="flex flex-col">
+      <div>
+        <Toaster />
+      </div>
       <h2 className="font-bold text-lg font-serif">Sign Up</h2>
       <form
         className="w-full 
@@ -144,7 +152,7 @@ const SignUpCard = () => {
           focus:outline-none
           focus:ring-0
           focus:border-2
-          focus:border-indigo-200
+          focus:border-orange-100
           placeholder: pl-4"
           {...register("name", {
             required: "Please enter your name.",
@@ -163,7 +171,7 @@ const SignUpCard = () => {
           focus:outline-none
           focus:ring-0
           focus:border-2
-          focus:border-indigo-200
+          focus:border-orange-100
           rounded-md
           placeholder: pl-4"
           {...register("email", {
@@ -183,7 +191,7 @@ const SignUpCard = () => {
           focus:outline-none
           focus:ring-0
           focus:border-2
-          focus:border-indigo-200
+          focus:border-orange-100
           rounded-md
           placeholder: pl-4
           "
@@ -222,17 +230,20 @@ const SignUpCard = () => {
         </div>
 
         <button
-          className="bg-indigo-200 
-          hover:bg-indigo-300
-           text-white font-bold 
+          className="bg-orange-100 
+          hover:bg-orange-300
+           text-black font-bold 
            py-2 px-4 
            rounded-lg
            w-full"
           type="submit"
           disabled={isLoading}
         >
-          Sign Up
+          {isLoading ? "Signing Up..." : "Sign Up Now"}
         </button>
+        <ChakraLink as={Link} to="/signin">
+          <Text fontSize="2xs">Already have an account? Sign in!</Text>
+        </ChakraLink>
       </form>
     </div>
   );

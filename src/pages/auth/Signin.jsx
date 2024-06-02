@@ -1,8 +1,11 @@
 import React, { useRef, Suspense } from "react";
 import SignInCard from "../../components/auth/SignInCard";
 
+import CafeGraphic from "../../assets/SignupCafe.png";
 import { Canvas } from "@react-three/fiber";
 import Sky from "../../models/Sky";
+import SignupGraphic from "../../assets/SignupGraphic.jpeg";
+import logo from "../../assets/logo.png";
 
 const Signin = () => {
   const adjustSkyForScreenSize = () => {
@@ -23,21 +26,17 @@ const Signin = () => {
   const [skyScale, skyPosition, skyRotation] = adjustSkyForScreenSize(); // props for our sky
 
   return (
-    <section className="w-screen h-screen relative flex">
-      <div className="absolute z-10 w-96 pb-10 pt-10 pl-10">
-        <SignInCard className="h-screen" />
+    <div className="h-screen w-full grid grid-cols-2 gap-4 justify-center">
+      <div className="bg-indigo-100 h-full items-center justify-center">
+        <img src={SignupGraphic} className="w-full h-full object-cover"></img>
       </div>
-      <Canvas
-        className="bg-transparent absolute left-0"
-        camera={{ near: 0.1, far: 1000 }}
-      >
-        <Suspense>
-          <directionalLight position={[0, 0, 0]} intensity={2} />
-          <ambientLight intensity={1} />
-          <Sky position={[0, 0, 0]} scale={skyScale} rotation={skyRotation} />
-        </Suspense>
-      </Canvas>
-    </section>
+      <div className=" p-12 h-screen flex flex-col justify-center">
+        <div className="flex justify-center pb-12">
+          <img src={logo} className="w-1/3 flex"></img>
+        </div>
+        <SignInCard />
+      </div>
+    </div>
   );
 };
 

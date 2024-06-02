@@ -13,7 +13,7 @@ import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
   return (
-    <div>
+    <div className="w-full">
       <PrimeReactProvider>
         <ChakraProvider>
           <Router>

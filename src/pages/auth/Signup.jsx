@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import SignUpCard from "../../components/auth/SignUpCard";
 import CafeGraphic from "../../assets/SignupCafe.png";
+import SignupGraphic from "../../assets/SignupGraphic.jpeg";
+import logo from "../../assets/logo.png";
 
 const supabase = createClient(
   import.meta.env.VITE_APP_SUPABASE_URL,
@@ -15,11 +17,14 @@ const supabase = createClient(
 
 const Signup = () => {
   return (
-    <div className="h-screen w-screen flex justify-center">
-      <div className="bg-indigo-100 w-3/5 h-full rounded-r-3xl flex flex-col items-center justify-center">
-        <img src={CafeGraphic} className="h-[60vh] w-[60vh]"></img>
+    <div className="h-screen w-full grid grid-cols-2 gap-4 justify-center">
+      <div className="bg-indigo-100 h-full items-center justify-center">
+        <img src={SignupGraphic} className="w-full h-full object-cover"></img>
       </div>
-      <div className="w-2/5 pt-8 pb-8 pl-8 pr-8 h-screen flex flex-col justify-center">
+      <div className=" p-12 h-screen flex flex-col justify-center">
+        <div className="flex justify-center pb-12">
+          <img src={logo} className="w-1/3 flex"></img>
+        </div>
         <SignUpCard />
       </div>
     </div>

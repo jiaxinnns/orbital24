@@ -32,31 +32,35 @@ const SignInCard = () => {
     // disable submit button
     setIsLoading(true);
 
-    // login logic
-    const e = getValues("email");
-    const p = getValues("password");
+    try {
+      // login logic
+      const e = getValues("email");
+      const p = getValues("password");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: getValues("email"),
-      password: getValues("password"),
-    });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: getValues("email"),
+        password: getValues("password"),
+      });
 
-    // axios.get(`http://localhost:4000/api/signin/${hi}`).then(function (res) {
-    //   console.log(res);
-    // });
+      // axios.get(`http://localhost:4000/api/signin/${hi}`).then(function (res) {
+      //   console.log(res);
+      // });
 
-    // login done / failed, enable submit button
-    setIsLoading(false);
+      // login done / failed, enable submit button
+      setIsLoading(false);
 
-    // navigate if login was successful
-    if (data.session) {
-      console.log(data);
-      const expirationTime = new Date(new Date().getTime() + 120000);
-      Cookies.set("auth", JSON.stringify(data), { expires: expirationTime });
+      // navigate if login was successful
+      if (data.session) {
+        console.log(data);
+        const expirationTime = new Date(new Date().getTime() + 120000);
+        Cookies.set("auth", JSON.stringify(data), { expires: expirationTime });
 
-      navigate("/home");
-    } else if (error) {
-      toast.error("Error Signing In");
+        navigate("/home");
+      } else if (error) {
+        throw new Error();
+      }
+    } catch (e) {
+      toast.error("Error Signing In. Please check your login credentials.");
     }
   });
 

@@ -116,6 +116,7 @@ const SignUpCard = () => {
       // Read the error response text
       const errorDetails = await response.text();
       toast.error("Error Signing Up");
+      setIsLoading(false);
       // Throw an error with the HTTP status code and error details
       throw new Error(
         `HTTP error! Status: ${response.status}, Details: ${errorDetails}`

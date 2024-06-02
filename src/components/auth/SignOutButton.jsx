@@ -13,7 +13,11 @@ const SignOutButton = () => {
     error && console.log(error);
     !error && Cookies.remove("auth");
   }
-  return <button onClick={handleClick}>sign out</button>;
+  return (
+    <button className="border-gray-500" onClick={handleClick}>
+      sign out
+    </button>
+  );
 };
 
 export default SignOutButton;

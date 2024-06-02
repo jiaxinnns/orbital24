@@ -42,25 +42,29 @@ const SignUpCard = () => {
 
   const [selectedFaculty, setSelectedFaculty] = useState("Others");
   const [selectedGender, setSelectedGender] = useState("Others");
-  const [id, setId] = useState();
+  // const [id, setId] = useState();
 
   const submitAction = handleSubmit(async (d) => {
     // disable submit button
     setIsLoading(true);
 
     // sign up logic
-    const { data, error } = await supabase.auth.signUp({
-      email: getValues("email"),
-      password: getValues("password"),
-      options: {
-        emailRedirectTo: "https://localhost:5173.com",
-      },
-    });
-    data && console.log(data);
-    error && console.log(error);
-
-    // after signup (auth) is done, get unique user id using the email
     try {
+      const { data, error } = await supabase.auth.signUp({
+        email: getValues("email"),
+        password: getValues("password"),
+        options: {
+          emailRedirectTo: "https://localhost:5173.com",
+        },
+      });
+      data && console.log(data);
+      error && console.log(error);
+      if (error) {
+        toast.error(error.text());
+        throw new Error(error.text());
+      }
+
+      // after signup (auth) is done, get unique user id using the email
       const response = await fetch(
         `http://localhost:4000/api/users?email=${encodeURIComponent(
           getValues("email")
@@ -76,57 +80,58 @@ const SignUpCard = () => {
       if (!response.ok) {
         const e = await response.text();
         console.log(e);
-        throw new Error(response);
-      } else {
-        const user = await response.json();
-        console.log(user[0].id);
-        setId(user[0].id);
+        throw new Error();
       }
-    } catch (error) {
-      console.log(error);
-    }
 
-    // consolidate user data
+      // consolidate user data
+      const user = await response.json();
+      const userId = user[0].id;
 
-    const userData = [
-      {
-        id: id,
-        name: getValues("name"),
-        faculty: selectedFaculty,
-        gender: selectedGender,
-      },
-    ];
+      const userData = [
+        {
+          id: userId,
+          name: getValues("name"),
+          faculty: selectedFaculty,
+          gender: selectedGender,
+        },
+      ];
 
-    console.log(userData[0]);
+      console.log(userData[0]);
 
-    // then push to a new table with the new id and additional info
-    const response1 = await fetch("http://localhost:4000/api/userinfo", {
-      method: "POST",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(userData[0]),
-    });
+      // then push to a new table with the new id and additional info
+      const response1 = await fetch("http://localhost:4000/api/userinfo", {
+        method: "POST",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(userData[0]),
+      });
 
-    if (!response1.ok) {
-      // Read the error response text
-      const errorDetails = await response.text();
-      toast.error("Error Signing Up");
+      console.log("hello");
+
+      if (!response1.ok) {
+        // Read the error response text
+        const errorDetails = await response.text();
+        setIsLoading(false);
+        // Throw an error with the HTTP status code and error details
+        throw new Error(
+          `HTTP error! Status: ${response.status}, Details: ${errorDetails}`
+        );
+      } else {
+        toast.success("Successfully Signed Up! Please Sign In.");
+      }
+
+      console.log(response1);
+
       setIsLoading(false);
-      // Throw an error with the HTTP status code and error details
-      throw new Error(
-        `HTTP error! Status: ${response.status}, Details: ${errorDetails}`
-      );
-    } else {
-      toast.success("Successfully Signed Up! Please Sign In.");
+    } catch (e) {
+      toast.error("Error Signing Up. You may have already created an account.");
+      setIsLoading(false);
     }
-
-    console.log(response1);
-
     setIsLoading(false);
   });
 
@@ -184,8 +189,8 @@ const SignUpCard = () => {
         )}
 
         <input
-          type="text"
-          placeholder="Password"
+          type="password"
+          placeholder="Password (Min. 6 characters)"
           className="input 
           border
           border-gray-300
@@ -198,6 +203,7 @@ const SignUpCard = () => {
           "
           {...register("password", {
             required: "Please enter your password.",
+            minLength: 6,
           })}
         ></input>
         {errors.email && (

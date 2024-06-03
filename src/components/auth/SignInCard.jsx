@@ -52,8 +52,10 @@ const SignInCard = () => {
       // navigate if login was successful
       if (data.session) {
         console.log(data);
-        const expirationTime = new Date(new Date().getTime() + 120000);
-        Cookies.set("auth", JSON.stringify(data), { expires: expirationTime });
+        const expirationTime = new Date(new Date().getTime() + 3600000);
+        Cookies.set("auth", JSON.stringify(data.session), {
+          expires: expirationTime,
+        });
 
         navigate("/home");
       } else if (error) {

@@ -14,8 +14,16 @@ const SignOutButton = () => {
     !error && Cookies.remove("auth");
   }
   return (
-    <button className="border-gray-500" onClick={handleClick}>
-      Sign Out
+    <button
+      className="w-2/5 
+      rounded-full  
+      bg-orange-950 
+      text-white
+      hover:border-white
+      "
+      onClick={handleClick}
+    >
+      <p className="font-serif p-1 text-sm">Sign Out</p>
     </button>
   );
 };

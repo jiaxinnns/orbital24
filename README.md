@@ -1,5 +1,4 @@
-Link to our code:
-https://drive.google.com/file/d/1OFRDyPu5js2onea-yErGTBDkEmtC0uc8/view?usp=drive_link
+(THIS VERSION OF OUR README IS OUTDATED, PLEASE REFER TO GOOGLE DOCS)
 
 Team Name:
 Study Buddies

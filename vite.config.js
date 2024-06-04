@@ -21,6 +21,12 @@ export default defineConfig({
         ws: false,
       },
     },
+    open: true,
+  },
+  resolve: {
+    alias: {
+      "@": "/src",
+    },
   },
   assetsInclude: ["**/*.glb"],
 });

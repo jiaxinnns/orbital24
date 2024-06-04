@@ -8,7 +8,7 @@ import Home from "./pages/user/Home";
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import Welcome from "./pages/Welcome";
-import FindMatches from "./pages/user/FindMatches";
+import EditPreferences from "./pages/user/EditPreferences";
 import { SignIn } from "@supabase/auth-ui-react";
 import PrivateRoute from "./PrivateRoute";
 import { AuthProvider } from "./contexts/auth/AuthContext";
@@ -29,8 +29,8 @@ const App = () => {
                   element={<PrivateRoute component={<Home />} />}
                 />
                 <Route
-                  path="/find-matches"
-                  element={<PrivateRoute component={<FindMatches />} />}
+                  path="/edit-preferences"
+                  element={<PrivateRoute component={<EditPreferences />} />}
                 />
               </Routes>
             </Router>

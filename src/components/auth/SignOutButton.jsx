@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import Cookies from "js-cookie";
 
@@ -7,11 +7,18 @@ const supabase = createClient(
   import.meta.env.VITE_APP_ANON_KEY
 );
 
-const SignOutButton = () => {
+const SignOutButton = (props) => {
+  const [loading, setLoading] = useState(false);
   async function handleClick(e) {
-    const { error } = await supabase.auth.signOut();
-    error && console.log(error);
-    !error && Cookies.remove("auth");
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      error && console.log(error);
+      !error && Cookies.remove("auth");
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
   }
   return (
     <button
@@ -21,9 +28,12 @@ const SignOutButton = () => {
       text-white
       hover:border-white
       "
+      disabled={loading}
       onClick={handleClick}
     >
-      <p className="font-serif p-1 text-sm">Sign Out</p>
+      <p className="font-serif p-1 text-sm">
+        {loading ? "Signing Out..." : "Sign Out"}
+      </p>
     </button>
   );
 };

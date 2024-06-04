@@ -63,6 +63,9 @@ function SideBar(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <IconButton
@@ -90,7 +93,7 @@ function SideBar(props) {
             <div className="text-sm text-gray-500 font-serif">
               {session ? session.user.email : "Loading..."}
             </div>
-            <SignOutButton />
+            <SignOutButton loading={loading} />
           </DrawerHeader>
 
           <DrawerBody className="font-serif">

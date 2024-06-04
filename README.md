@@ -1,5 +1,7 @@
 (THIS VERSION OF OUR README IS OUTDATED, PLEASE REFER TO GOOGLE DOCS)
 
+Link to deployed app: https://orbital24-studybuddies.netlify.app/
+
 Team Name:
 Study Buddies
 

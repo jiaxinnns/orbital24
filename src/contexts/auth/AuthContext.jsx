@@ -36,16 +36,25 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchSession();
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session) {
+          Cookies.set("auth", JSON.stringify(session));
+          setSession(session);
+        } else {
+          Cookies.remove("auth");
+          setSession(null);
+        }
+      }
+    );
+
+    // Cleanup listener on unmount
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
-
-  //   const login = (userData) => {
-  //     setUser(userData);
-  //   };
-
-  //   const logout = () => {
-  //     setUser(null);
-  //     setSession(null);
-  //   };
 
   return (
     <AuthContext.Provider value={{ session, loading }}>

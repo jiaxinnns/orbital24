@@ -20,12 +20,22 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // logic to fetch user info and session data
-    const sessionData = Cookies.get("auth");
-    if (sessionData) {
-      const parsedSession = JSON.parse(sessionData);
+    const fetchSession = async () => {
+      try {
+        setLoading(true);
+        const sessionData = Cookies.get("auth");
+        if (sessionData) {
+          const parsedSession = JSON.parse(sessionData);
+          setSession(parsedSession);
+        }
+        setLoading(false);
+      } catch (e) {
+        console.log("error fetching session data");
+        setLoading(false);
+      }
+    };
 
-      setSession(parsedSession);
-    }
+    fetchSession();
   }, []);
 
   //   const login = (userData) => {

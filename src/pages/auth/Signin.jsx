@@ -27,7 +27,7 @@ const Signin = () => {
 
   return (
     <div className="h-screen w-full grid grid-cols-2 gap-4 justify-center">
-      <div className="bg-indigo-100 h-full items-center justify-center">
+      <div className="bg-orange-100 h-full items-center justify-center">
         <img src={SignupGraphic} className="w-full h-full object-cover"></img>
       </div>
       <div className=" p-12 h-screen flex flex-col justify-center">

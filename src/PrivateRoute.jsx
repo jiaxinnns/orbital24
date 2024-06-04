@@ -26,7 +26,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  console.log(session);
+  // console.log(session);
   return !!Cookies.get("auth") ? Component : <Navigate to="/signin" />;
 };
 

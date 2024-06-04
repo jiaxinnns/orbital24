@@ -6,6 +6,10 @@ import { useAuth } from "../../contexts/auth/AuthContext";
 
 const Home = () => {
   const { session, loading } = useAuth();
+  console.log(session);
+  if (loading) {
+    return <div>Loading Dashboard...</div>;
+  }
   return (
     <div className="flex flex-col w-screen h-screen bg-orange-100">
       <UserNav />

@@ -4,9 +4,9 @@ import EditPreferencesCard from "../../components/user/edit-preferences/EditPref
 
 const EditPreferences = () => {
   return (
-    <div className="w-screen h-screen flex flex-col bg-orange-50">
+    <div className="w-screen h-screen flex flex-col items-center bg-orange-50">
       <UserNav />
-      <div className="flex justify-center w-1/2 p-16">
+      <div className="flex justify-self-center w-1/2 p-16">
         <EditPreferencesCard />
       </div>
     </div>

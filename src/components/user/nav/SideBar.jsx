@@ -24,11 +24,11 @@ import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { GrNotes } from "react-icons/gr";
 import { PiStudentFill } from "react-icons/pi";
 import SignOutButton from "../../auth/SignOutButton";
+import ViewProfileButton from "./ViewProfileButton";
 
 function SideBar(props) {
   // get session / user info
-  const { session, loading } = useAuth();
-  session && console.log(session.user.email);
+  const { session, userInfo, userPreferences, loading } = useAuth();
 
   // TODO: add links
   const items = [
@@ -93,7 +93,10 @@ function SideBar(props) {
             <div className="text-sm text-gray-500 font-serif">
               {session ? session.user.email : "Loading..."}
             </div>
-            <SignOutButton loading={loading} />
+            <div className="flex gap-x-2">
+              <ViewProfileButton />
+              <SignOutButton loading={loading} />
+            </div>
           </DrawerHeader>
 
           <DrawerBody className="font-serif">

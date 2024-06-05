@@ -1,8 +1,17 @@
 import React, { useRef, useState } from "react";
-import { Card, CardBody, CardFooter, CardHeader } from "@chakra-ui/react";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  useToast,
+} from "@chakra-ui/react";
 import logo from "../../../assets/logo.png";
 import Select from "react-select";
+import { useAuth } from "../../../contexts/auth/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
+import { useToastContext } from "../../../contexts/user/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 const EditPreferencesCard = () => {
   const faculties = [
@@ -35,16 +44,52 @@ const EditPreferencesCard = () => {
   const [selectedGender, setSelectedGender] = useState("No preference");
   const [selectedStudySpot, setSelectedStudySpot] = useState("No preference");
 
-  async function handleSubmit() {
-    toast.success("not implemented yet");
-    console.log(selectedFaculty);
+  const { session, loading } = useAuth();
+  const navigate = useNavigate();
+  const { showToast } = useToastContext();
 
+  async function handleSubmit() {
+    const userData = [
+      {
+        id: session.user.id,
+        faculty: selectedFaculty,
+        gender: selectedGender,
+        studyspot: selectedStudySpot,
+      },
+    ];
+
+    // call API to post
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/userpreferences",
+        {
+          method: "POST",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+          body: JSON.stringify(userData[0]),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error();
+      }
+    } catch (e) {
+      toast.error("Error when editing preferences.");
+    }
+
+    showToast("Successfully edited preferences");
     // reset fields
     setSelectedFaculty("No preference");
     setSelectedGender("No preference");
     setSelectedStudySpot("No preference");
 
-    // facultyRef.current && facultyRef.current.clearValue();
+    // bring back to homepage
+    navigate("/home");
   }
 
   const facultyRef = useRef();
@@ -105,8 +150,11 @@ const EditPreferencesCard = () => {
               w-1/2 
               rounded-3xl
               "
+              disabled={loading}
             >
-              <p className="p-3">Submit Preferences</p>
+              <p className="p-3">
+                {loading ? "Submitting Preferences..." : "Submit Preferences"}
+              </p>
             </button>
           </div>
         </CardBody>

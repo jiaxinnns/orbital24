@@ -16,6 +16,8 @@ export const useAuth = () => {
 // AuthProvider component to provide authentication state
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [userPreferences, setUserPreferences] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         if (sessionData) {
           const parsedSession = JSON.parse(sessionData);
           setSession(parsedSession);
+          return parsedSession;
         }
         setLoading(false);
       } catch (e) {
@@ -35,9 +38,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    fetchSession();
-
-    // Listen for auth state changes
+    // listen for auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session) {
@@ -50,6 +51,36 @@ export const AuthProvider = ({ children }) => {
       }
     );
 
+    const fetchUserInfo = async () => {
+      const session = await fetchSession();
+      try {
+        if (session) {
+          const response = await fetch(
+            `http://localhost:4000/api/getuserinfo?id=${session.user.id}`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "*",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error();
+          }
+          const data = await response.json();
+          setUserInfo(data);
+          console.log("hi");
+        }
+      } catch (e) {
+        console.log("error fetching user info");
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+    setLoading(false);
+
     // Cleanup listener on unmount
     return () => {
       authListener.subscription.unsubscribe();
@@ -57,7 +88,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, loading }}>
+    <AuthContext.Provider
+      value={{ session, userInfo, userPreferences, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

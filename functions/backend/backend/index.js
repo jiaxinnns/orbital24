@@ -58,19 +58,67 @@ app.get("/api/users", async (req, res) => {
   data[0] && res.json([{ id: data[0].id }]);
 });
 
+app.get("/api/getuserinfo", async (req, res) => {
+  const { data, error } = await supabase
+    .from("user_info")
+    .select()
+    .eq("id", req.query.id);
+  console.log(data[0]);
+  data[0] && res.json(data[0]);
+});
+
+app.get("/api/getuserpreferences", async (req, res) => {
+  const { data, error } = await supabase
+    .from("user_preferences")
+    .select()
+    .eq("id", req.query.id);
+  console.log(data);
+  data[0] && res.json(data[0]);
+});
+
 app.post("/api/userinfo", async (req, res) => {
-  console.log("req:" + req.body.id);
+  // add user information
   const { error } = await supabase.from("user_info").insert({
     id: req.body.id,
     name: req.body.name,
     faculty: req.body.faculty,
     gender: req.body.gender,
   });
+
+  // set preferences to default values
+  const { error1 } = await supabase.from("user_preferences").insert({
+    id: req.body.id,
+    faculty: "No preference",
+    gender: "No preference",
+    study_spot: "No preference",
+  });
+
   if (error) {
     console.log(error);
     res.send(error);
   } else {
     res.send("Account Created!");
+  }
+});
+
+app.post("/api/userpreferences", async (req, res) => {
+  const { data, error } = await supabase
+    .from("user_preferences")
+    .update({
+      id: req.body.id,
+      faculty: req.body.faculty,
+      gender: req.body.gender,
+      study_spot: req.body.studyspot,
+    })
+    .eq("id", req.body.id)
+    .select();
+
+  if (error) {
+    console.log(error);
+    res.send(error);
+  } else {
+    console.log(data);
+    res.send("Preferences updated");
   }
 });
 

@@ -22,7 +22,7 @@ const Profile = () => {
             <img src={logo} className="w-1/5"></img>
             <div className="flex flex-col justify-center">
               <div className="text-2xl font-bold font-serif">
-                {userInfo ? userInfo.name : "Loading..."}
+                {userInfo ? userInfo.name : "Please refresh..."}
               </div>
               <div className="text-lg text-gray-600 font-serif">
                 {session ? session.user.email : "Loading..."}

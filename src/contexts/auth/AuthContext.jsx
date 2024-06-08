@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
         console.log("error fetching session data");
         setLoading(false);
       }
+      return null;
     };
 
     // listen for auth state changes
@@ -47,6 +48,8 @@ export const AuthProvider = ({ children }) => {
         } else {
           Cookies.remove("auth");
           setSession(null);
+          setUserInfo(null);
+          setUserPreferences(null);
         }
       }
     );
@@ -71,6 +74,8 @@ export const AuthProvider = ({ children }) => {
           const data = await response.json();
           setUserInfo(data);
           console.log("hi");
+        } else {
+          setUserInfo(null);
         }
       } catch (e) {
         console.log("error fetching user info");

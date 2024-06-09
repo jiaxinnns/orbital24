@@ -34,7 +34,7 @@ function SideBar(props) {
   const items = [
     { name: "Dashboard", link: "/home", id: 0 },
     { name: "Edit Preferences", link: "/edit-preferences", id: 1 },
-    { name: "NOT WORKING YET", link: "/", id: 2 },
+    { name: "Find Matches", link: "/find-matches", id: 2 },
     { name: "NOT WORKING YET", link: "/", id: 3 },
   ];
 

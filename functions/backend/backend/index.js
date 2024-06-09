@@ -48,36 +48,42 @@ const port = 4000;
 //   res.send("lol");
 // });
 
+// fetch user according to email
 app.get("/api/users", async (req, res) => {
   console.log(req.query.email);
   const { data, error } = await supabase
     .from("users")
     .select()
     .eq("email", req.query.email);
-  console.log(data);
   data[0] && res.json([{ id: data[0].id }]);
 });
 
+// fetch random user info (limit of 50)
+app.get("/api/allusers", async (req, res) => {
+  const { data, error } = await supabase.from("user_info").select().range(0, 9);
+  data && res.json(data);
+});
+
+// get user info by ID
 app.get("/api/getuserinfo", async (req, res) => {
   const { data, error } = await supabase
     .from("user_info")
     .select()
     .eq("id", req.query.id);
-  console.log(data[0]);
   data[0] && res.json(data[0]);
 });
 
+// get user preference by ID
 app.get("/api/getuserpreferences", async (req, res) => {
   const { data, error } = await supabase
     .from("user_preferences")
     .select()
     .eq("id", req.query.id);
-  console.log(data);
   data[0] && res.json(data[0]);
 });
 
+// add user information
 app.post("/api/userinfo", async (req, res) => {
-  // add user information
   const { error } = await supabase.from("user_info").insert({
     id: req.body.id,
     name: req.body.name,
@@ -101,6 +107,7 @@ app.post("/api/userinfo", async (req, res) => {
   }
 });
 
+// add user preferences
 app.post("/api/userpreferences", async (req, res) => {
   const { data, error } = await supabase
     .from("user_preferences")

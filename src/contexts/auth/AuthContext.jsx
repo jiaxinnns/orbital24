@@ -54,8 +54,16 @@ export const AuthProvider = ({ children }) => {
       }
     );
 
+    setLoading(false);
+
+    // Cleanup listener on unmount
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchUserInfo = async () => {
-      const session = await fetchSession();
       try {
         if (session) {
           const response = await fetch(
@@ -73,7 +81,7 @@ export const AuthProvider = ({ children }) => {
           }
           const data = await response.json();
           setUserInfo(data);
-          console.log("hi");
+          //console.log("hi");
         } else {
           setUserInfo(null);
         }
@@ -84,13 +92,39 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchUserInfo();
-    setLoading(false);
+  }, [session]);
 
-    // Cleanup listener on unmount
-    return () => {
-      authListener.subscription.unsubscribe();
+  useEffect(() => {
+    const fetchUserPreferences = async () => {
+      try {
+        if (session) {
+          const response = await fetch(
+            `http://localhost:4000/api/getuserpreferences?id=${session.user.id}`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "*",
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error();
+          }
+          const data = await response.json();
+          setUserPreferences(data);
+          //console.log(data);
+        } else {
+          setUserPreferences(null);
+        }
+      } catch (e) {
+        console.log("error fetching user info");
+        setLoading(false);
+      }
     };
-  }, []);
+
+    fetchUserPreferences();
+  }, [session]);
 
   return (
     <AuthContext.Provider

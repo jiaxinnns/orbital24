@@ -14,6 +14,8 @@ import PrivateRoute from "./PrivateRoute";
 import { AuthProvider } from "./contexts/auth/AuthContext";
 import { ToastProvider } from "./contexts/user/ToastContext";
 import Profile from "./pages/user/Profile";
+import FindMatches from "./pages/user/FindMatches";
+import { MatchProvider } from "./contexts/user/MatchContext";
 
 const App = () => {
   return (
@@ -22,25 +24,31 @@ const App = () => {
         <ChakraProvider>
           <AuthProvider>
             <ToastProvider>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<Welcome />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/signin" element={<Signin />} />
-                  <Route
-                    path="/home"
-                    element={<PrivateRoute component={<Home />} />}
-                  />
-                  <Route
-                    path="/edit-preferences"
-                    element={<PrivateRoute component={<EditPreferences />} />}
-                  />
-                  <Route
-                    path="/profile"
-                    element={<PrivateRoute component={<Profile />} />}
-                  />
-                </Routes>
-              </Router>
+              <MatchProvider>
+                <Router>
+                  <Routes>
+                    <Route path="/" element={<Welcome />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/signin" element={<Signin />} />
+                    <Route
+                      path="/home"
+                      element={<PrivateRoute component={<Home />} />}
+                    />
+                    <Route
+                      path="/edit-preferences"
+                      element={<PrivateRoute component={<EditPreferences />} />}
+                    />
+                    <Route
+                      path="/profile"
+                      element={<PrivateRoute component={<Profile />} />}
+                    />
+                    <Route
+                      path="/find-matches"
+                      element={<PrivateRoute component={<FindMatches />} />}
+                    />
+                  </Routes>
+                </Router>
+              </MatchProvider>
             </ToastProvider>
           </AuthProvider>
         </ChakraProvider>

@@ -4,12 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && npm run build:functions",
-    "build:functions": "cp -r backend functions/backend",
+    "dev": "cd frontend && vite",
+    "build": "cd frontend && vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "concurrently \"cd backend && node index.js\" \"npm run dev\""
+    "start": "concurrently \"cd ./netlify/functions && node server.js\" \"npm run dev\""
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -41,7 +40,9 @@
     "react-router-dom": "^6.23.0",
     "react-select": "^5.8.0",
     "serverless-http": "^3.2.0",
-    "three": "^0.164.1"
+    "three": "^0.164.1",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

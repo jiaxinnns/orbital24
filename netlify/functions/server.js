@@ -3,7 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import http from "http";
 import serverless from "serverless-http";
+
+import { Server } from "socket.io";
 
 //const router = require("./routes/router");
 dotenv.config({
@@ -33,20 +36,44 @@ app.use(cors(corsOptions));
 
 const port = 4000;
 
-// app.get("/api/signin/:hi", async (req, res) => {
-//   // const { data, error } = await req.params.supabase.auth.signInWithPassword({
-//   //   email: req.params.email,
-//   //   password: req.params.password,
-//   // });
-//   // console.log("signed in");
-//   // data && console.log(data);
-//   // data && res.send(data);
-//   // error && res.send(error);
-//   // error && console.log(error);
-//   // res.send("hi");
-//   console.log(req.params || "not found");
-//   res.send("lol");
-// });
+// add new message to chat
+app.post("/api/newmessage", async (req, res) => {
+  const { chat_id, sender_id, sender_name, message } = req.body;
+  const { data, error } = await supabase.from("chat_messages").insert([
+    {
+      chat_id: chat_id,
+      sender_id: sender_id,
+      sender_name: sender_name,
+      message: message,
+      timestamp: new Date(),
+    },
+  ]);
+
+  if (error) {
+    console.error("Error inserting message:", error);
+    res.status(500).json({ error: error.message });
+  } else {
+    res.status(200).json(data);
+  }
+});
+
+// fetch chats according to chat ID
+app.get("/api/getmessages", async (req, res) => {
+  const { chat_id } = req.query;
+  const { data, error } = await supabase
+    .from("chat_messages")
+    .select()
+    .eq("chat_id", chat_id)
+    .order("timestamp", { ascending: true })
+    .limit(100);
+
+  if (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ error: error.message });
+  } else {
+    res.status(200).json(data);
+  }
+});
 
 // fetch requests according to 'from' and 'to' ID
 app.get("/api/requests", async (req, res) => {
@@ -58,26 +85,62 @@ app.get("/api/requests", async (req, res) => {
   data && res.json(data);
 });
 
-// fetch incomplete requests according to 'to' ID
+// fetch incomplete and NON-declined requests according to 'to' ID
 app.get("/api/incompleterequeststo", async (req, res) => {
   const { data, error } = await supabase
     .from("requests")
     .select()
     .eq("to", req.query.to)
-    .eq("completed", false);
+    .eq("completed", false)
+    .eq("declined", false);
+  data && res.json(data);
+});
+
+// fetch complete requests according to 'to' ID
+app.get("/api/completerequeststo", async (req, res) => {
+  const { data, error } = await supabase
+    .from("requests")
+    .select()
+    .eq("to", req.query.to)
+    .eq("completed", true)
+    .eq("declined", false);
+  data && res.json(data);
+});
+
+// fetch complete requests according to 'from' ID
+app.get("/api/completerequestsfrom", async (req, res) => {
+  const { data, error } = await supabase
+    .from("requests")
+    .select()
+    .eq("from", req.query.from)
+    .eq("completed", true)
+    .eq("declined", false);
   data && res.json(data);
 });
 
 // complete existing request according to request ID
 app.post("/api/completerequest", async (req, res) => {
   // console.log(req.query.email);
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("requests")
     .update({
       completed: true,
     })
     .eq("id", req.body.id);
-  data && res.json(data);
+  error && res.send(error);
+  !error && res.send("Accepted");
+});
+
+// decline existing request according to request ID
+app.post("/api/declinerequest", async (req, res) => {
+  const { error } = await supabase
+    .from("requests")
+    .update({
+      declined: true,
+    })
+    .eq("id", req.body.id);
+  error && res.send(error);
+  !error && res.send("Declined");
 });
 
 // add new request
@@ -92,7 +155,7 @@ app.post("/api/newrequest", async (req, res) => {
   ]);
 
   error && console.log(error);
-  !error && res.send("Completed");
+  !error && res.send("New request made");
 });
 
 // fetch user according to email
@@ -186,7 +249,36 @@ app.get("/", async (req, res) => {
   res.send("hello world");
 });
 
-app.listen(port, () => {
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET, POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("new connection");
+  // socket.emit("message", "welcome to chat");
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+
+  socket.on("join", ({ room, name }) => {
+    console.log("join", room, name);
+    socket.join(room);
+    io.to(room).emit("notification", `${name} joined ${room}.`);
+  });
+
+  socket.on("messageRoom", ({ room, message }) => {
+    console.log("message", room, message.sender_name, message.message);
+    io.to(room).emit("message", message);
+  });
+});
+
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 

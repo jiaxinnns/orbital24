@@ -47,7 +47,7 @@ export const MatchProvider = ({ children }) => {
           throw new Error();
         } else {
           const data = await response.json();
-          console.log(data);
+          // console.log(data);
           setUsers(data);
         }
       } catch (e) {
@@ -83,7 +83,7 @@ export const MatchProvider = ({ children }) => {
 
     setScores(tempScores);
 
-    console.log(scores);
+    // console.log(scores);
 
     const tempPossMatches =
       scores &&
@@ -93,7 +93,7 @@ export const MatchProvider = ({ children }) => {
         })
         .slice(0, 9);
 
-    console.log(tempPossMatches);
+    // console.log(tempPossMatches);
     setPossMatches(tempPossMatches);
   }, [users, setUsers, userPreferences]);
 

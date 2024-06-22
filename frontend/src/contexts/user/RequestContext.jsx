@@ -58,15 +58,17 @@ export const RequestProvider = ({ children }) => {
   }, [session]);
 
   useEffect(() => {
-    console.log(requests);
+    // console.log(requests);
     const fetchUsers = async () => {
-      const { data, error } = await supabase
-        .from("user_info")
-        .select()
-        .in("id", requests);
+      if (requests.length > 0) {
+        const { data, error } = await supabase
+          .from("user_info")
+          .select()
+          .in("id", requests);
 
-      console.log(data);
-      setReqUsers(data);
+        // console.log(data);
+        setReqUsers(data);
+      }
     };
 
     fetchUsers();

@@ -18,7 +18,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         port: 4000,
-        target: process.env.VITE_APP_API_URL,
+        target: process.env.VITE_APP_API_URL || "http://localhost:4000",
         changeOrigin: true,
         secure: false,
         ws: false,
@@ -32,4 +32,7 @@ export default defineConfig({
     },
   },
   assetsInclude: ["**/*.glb"],
+  optimizeDeps: {
+    exclude: ["express"],
+  },
 });

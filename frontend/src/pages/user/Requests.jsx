@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRequests } from "../../contexts/user/RequestContext";
 import UserNav from "../../components/user/nav/UserNav";
 import { Card } from "@chakra-ui/react";
@@ -6,8 +6,11 @@ import ProfileCard from "../../components/user/find-matches/ProfileCard";
 import RequestCard from "../../components/user/view-requests/RequestCard";
 
 const Requests = () => {
+  const [loading, setLoading] = useState(false);
+
   const { reqUsers } = useRequests();
-  console.log(reqUsers);
+
+  // console.log(reqUsers);
   return (
     <div className="flex flex-col w-screen h-screen font-serif bg-orange-50 items-center">
       <UserNav />
@@ -17,12 +20,19 @@ const Requests = () => {
       </div>
 
       <div className="flex flex-col w-1/2 gap-y-3 overflow-scroll">
-        {reqUsers ? (
+        {reqUsers && reqUsers.length > 0 ? (
           reqUsers.map((pm) => {
             return <RequestCard pm={pm} />;
           })
         ) : (
-          <Card>Please refresh...</Card>
+          <Card>
+            <div className="flex flex-col p-5">
+              <div className="font-bold text-2xl">
+                You have no requests yet.
+              </div>
+              <div>Find new matches with the 'Find Matches' function.</div>
+            </div>
+          </Card>
         )}
       </div>
     </div>

@@ -36,6 +36,7 @@ function SideBar(props) {
     { name: "Edit Preferences", link: "/edit-preferences", id: 1 },
     { name: "Find Matches", link: "/find-matches", id: 2 },
     { name: "View Requests", link: "/requests", id: 3 },
+    { name: "View Matches", link: "/matches", id: 4 },
   ];
 
   const listItems = items.map((item) => (

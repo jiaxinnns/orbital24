@@ -18,6 +18,8 @@ import FindMatches from "./pages/user/FindMatches";
 import { MatchProvider } from "./contexts/user/MatchContext";
 import Requests from "./pages/user/Requests";
 import { RequestProvider } from "./contexts/user/RequestContext";
+import Matches from "./pages/user/Matches";
+import Chat from "./pages/user/Chat";
 
 const App = () => {
   return (
@@ -54,6 +56,14 @@ const App = () => {
                       <Route
                         path="/requests"
                         element={<PrivateRoute component={<Requests />} />}
+                      />
+                      <Route
+                        path="/matches"
+                        element={<PrivateRoute component={<Matches />} />}
+                      />
+                      <Route
+                        path="/chat"
+                        element={<PrivateRoute component={<Chat />} />}
                       />
                     </Routes>
                   </Router>

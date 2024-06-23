@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
 import { useAuth } from "../../../contexts/auth/AuthContext";
-import { socket } from "../../../../socket";
 import { useNavigate } from "react-router-dom";
 import ably from "../../../../ably";
 

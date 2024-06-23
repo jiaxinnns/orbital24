@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@chakra-ui/react";
 import ChatButton from "../../components/user/view-matches/ChatButton";
-import { socket } from "../../../socket";
 import { useAuth } from "../../contexts/auth/AuthContext";
 import { useLocation } from "react-router-dom";
 import UserNav from "../../components/user/nav/UserNav";
@@ -29,50 +28,11 @@ const Chat = (props) => {
     localStorage.setItem("other_user", otherUser);
 
     const messageHandler = (msg) => {
+      console.log(msg);
       setMessages((prevMessages) => [...prevMessages, msg.data]);
     };
 
     channel.subscribe("message", messageHandler);
-
-    //   const m = await msg.data;
-    //   if (m.id !== lastMessageId) {
-    //     console.log(m);
-
-    //     const newMessage = {
-    //       chat_id: room,
-    //       sender_id: m.sender_id,
-    //       sender_name: m.sender_name,
-    //       message: m.message,
-    //       timestamp: new Date(),
-    //     };
-
-    //     // update frontend
-    //     setMessages((messages) => [...messages, newMessage]);
-
-    //     // add to database and publish to ably channel
-    //     try {
-    //       await fetch("/api/newmessage", {
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(newMessage),
-    //       });
-    //     } catch (error) {
-    //       console.error("Error saving message:", error);
-    //     }
-    //   }
-    // });
-
-    // channel.presence.enter({ name: userInfo?.name });
-
-    // // Handle presence updates
-    // channel.presence.subscribe("enter", (member) => {
-    //   console.log(`${member.clientId} entered the channel`);
-    // });
-    // channel.presence.subscribe("leave", (member) => {
-    //   console.log(`${member.clientId} left the channel`);
-    // });
 
     // TODO: fetch from database first
     const fetchChatMessages = async () => {

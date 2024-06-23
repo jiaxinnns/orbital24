@@ -121,8 +121,8 @@ const Matches = () => {
 
       <div className="flex flex-col w-1/2 gap-y-3 overflow-scroll">
         {matchedUsers ? (
-          matchedUsers.map((pm) => {
-            return <MatchCard pm={pm} />;
+          matchedUsers.map((pm, index) => {
+            return <MatchCard pm={pm} key={index} />;
           })
         ) : (
           <Card>

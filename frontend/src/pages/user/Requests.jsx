@@ -21,8 +21,8 @@ const Requests = () => {
 
       <div className="flex flex-col w-1/2 gap-y-3 overflow-scroll">
         {reqUsers && reqUsers.length > 0 ? (
-          reqUsers.map((pm) => {
-            return <RequestCard pm={pm} />;
+          reqUsers.map((pm, index) => {
+            return <RequestCard pm={pm} key={index} />;
           })
         ) : (
           <Card>

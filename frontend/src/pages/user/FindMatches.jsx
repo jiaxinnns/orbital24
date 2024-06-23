@@ -20,8 +20,8 @@ const FindMatches = () => {
       </div>
       <div className="flex flex-col w-1/2 gap-y-3 overflow-scroll">
         {possMatches ? (
-          possMatches.map((pm) => {
-            return <ProfileCard pm={pm} />;
+          possMatches.map((pm, index) => {
+            return <ProfileCard pm={pm} key={index} />;
           })
         ) : (
           <Card>Please refresh...</Card>

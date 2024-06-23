@@ -29,6 +29,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
+      "./promises": "ably/build/ably.js",
     },
   },
   assetsInclude: ["**/*.glb"],

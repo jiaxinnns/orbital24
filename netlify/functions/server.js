@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import http from "http";
 import serverless from "serverless-http";
+import Ably from "ably";
 
 import { Server } from "socket.io";
 
@@ -17,6 +18,8 @@ const supabase = createClient(
   process.env.VITE_APP_SUPABASE_URL,
   process.env.VITE_APP_ANON_KEY
 );
+
+const ably = new Ably.Realtime(process.env.VITE_APP_ABLY_API_KEY);
 
 const app = express();
 
@@ -38,22 +41,52 @@ const port = 4000;
 
 // add new message to chat
 app.post("/api/newmessage", async (req, res) => {
-  const { chat_id, sender_id, sender_name, message } = req.body;
-  const { data, error } = await supabase.from("chat_messages").insert([
-    {
-      chat_id: chat_id,
-      sender_id: sender_id,
-      sender_name: sender_name,
-      message: message,
-      timestamp: new Date(),
-    },
-  ]);
+  // const { chat_id, sender_id, sender_name, message } = req.body;
+  // const { data, error } = await supabase.from("chat_messages").insert([
+  //   {
+  //     chat_id: chat_id,
+  //     sender_id: sender_id,
+  //     sender_name: sender_name,
+  //     message: message,
+  //     timestamp: new Date(),
+  //   },
+  // ]);
 
-  if (error) {
-    console.error("Error inserting message:", error);
+  // if (error) {
+  //   console.error("Error inserting message:", error);
+  //   res.status(500).json({ error: error.message });
+  // } else {
+  //   res.status(200).json(data);
+  // }
+  console.log("TEST");
+  const { chat_id, sender_id, sender_name, message, timestamp } = req.body;
+
+  try {
+    // Insert message into the database
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .insert([{ chat_id, sender_id, sender_name, message, timestamp }]);
+
+    if (error) {
+      throw error;
+    }
+
+    // Publish message to the Ably channel
+    const channel = ably.channels.get(chat_id);
+    channel.publish("message", {
+      chat_id,
+      sender_id,
+      sender_name,
+      message,
+      timestamp,
+    });
+
+    console.log("UPDATED");
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error saving message:", error);
     res.status(500).json({ error: error.message });
-  } else {
-    res.status(200).json(data);
   }
 });
 
@@ -258,25 +291,25 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("new connection");
-  // socket.emit("message", "welcome to chat");
+// io.on("connection", (socket) => {
+//   console.log("new connection");
+//   // socket.emit("message", "welcome to chat");
 
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
+//   socket.on("disconnect", () => {
+//     console.log("user disconnected");
+//   });
 
-  socket.on("join", ({ room, name }) => {
-    console.log("join", room, name);
-    socket.join(room);
-    io.to(room).emit("notification", `${name} joined ${room}.`);
-  });
+//   socket.on("join", ({ room, name }) => {
+//     console.log("join", room, name);
+//     socket.join(room);
+//     io.to(room).emit("notification", `${name} joined ${room}.`);
+//   });
 
-  socket.on("messageRoom", ({ room, message }) => {
-    console.log("message", room, message.sender_name, message.message);
-    io.to(room).emit("message", message);
-  });
-});
+//   socket.on("messageRoom", ({ room, message }) => {
+//     console.log("message", room, message.sender_name, message.message);
+//     io.to(room).emit("message", message);
+//   });
+// });
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);

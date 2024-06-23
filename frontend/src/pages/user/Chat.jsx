@@ -5,10 +5,10 @@ import { socket } from "../../../socket";
 import { useAuth } from "../../contexts/auth/AuthContext";
 import { useLocation } from "react-router-dom";
 import UserNav from "../../components/user/nav/UserNav";
-//import e from "express";
+import ably from "../../../ably";
+
 const Chat = (props) => {
   const { session, userInfo, userPreferences, loading } = useAuth();
-
   const { state } = useLocation();
 
   // get chatID and user info
@@ -17,6 +17,7 @@ const Chat = (props) => {
   const otherUser = state?.user || localStorage.getItem("other_user");
 
   const [messages, setMessages] = useState([]);
+  // const [lastMessageId, setLastMessageId] = useState(null);
 
   useEffect(() => {
     if (!room) {
@@ -24,7 +25,54 @@ const Chat = (props) => {
     }
     // save chatId and user info to local storage
     localStorage.setItem("chatID", room);
+    const channel = ably.channels.get(room);
     localStorage.setItem("other_user", otherUser);
+
+    const messageHandler = (msg) => {
+      setMessages((prevMessages) => [...prevMessages, msg.data]);
+    };
+
+    channel.subscribe("message", messageHandler);
+
+    //   const m = await msg.data;
+    //   if (m.id !== lastMessageId) {
+    //     console.log(m);
+
+    //     const newMessage = {
+    //       chat_id: room,
+    //       sender_id: m.sender_id,
+    //       sender_name: m.sender_name,
+    //       message: m.message,
+    //       timestamp: new Date(),
+    //     };
+
+    //     // update frontend
+    //     setMessages((messages) => [...messages, newMessage]);
+
+    //     // add to database and publish to ably channel
+    //     try {
+    //       await fetch("/api/newmessage", {
+    //         method: "POST",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(newMessage),
+    //       });
+    //     } catch (error) {
+    //       console.error("Error saving message:", error);
+    //     }
+    //   }
+    // });
+
+    // channel.presence.enter({ name: userInfo?.name });
+
+    // // Handle presence updates
+    // channel.presence.subscribe("enter", (member) => {
+    //   console.log(`${member.clientId} entered the channel`);
+    // });
+    // channel.presence.subscribe("leave", (member) => {
+    //   console.log(`${member.clientId} left the channel`);
+    // });
 
     // TODO: fetch from database first
     const fetchChatMessages = async () => {
@@ -43,60 +91,65 @@ const Chat = (props) => {
     };
 
     fetchChatMessages();
+
+    return () => {
+      channel.unsubscribe("message", messageHandler);
+      // channel.presence.leave();
+    };
     // console.log(messages);
-  }, [room]);
+  }, []);
 
   const [inputMessage, setInputMessage] = useState("");
 
-  const handleNewMessage = async (m) => {
-    // const exists = messages.some((msg) => msg.message === m.message);
-    console.log(m);
+  // const handleNewMessage = async (m) => {
+  //   // const exists = messages.some((msg) => msg.message === m.message);
+  //   console.log(m);
 
-    const newMessage = {
-      chat_id: room,
-      sender_id: m.sender_id,
-      sender_name: m.sender_name,
-      message: m.message,
-      timestamp: new Date(),
-    };
+  //   const newMessage = {
+  //     chat_id: room,
+  //     sender_id: m.sender_id,
+  //     sender_name: m.sender_name,
+  //     message: m.message,
+  //     timestamp: new Date(),
+  //   };
 
-    setMessages((messages) => [...messages, newMessage]);
-    // TODO: add to database
-    try {
-      await fetch("/api/newmessage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newMessage),
-      });
-    } catch (error) {
-      console.error("Error saving message:", error);
-    }
-  };
+  //   setMessages((messages) => [...messages, newMessage]);
+  //   // TODO: add to database
+  //   try {
+  //     await fetch("/api/newmessage", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(newMessage),
+  //     });
+  //   } catch (error) {
+  //     console.error("Error saving message:", error);
+  //   }
+  // };
 
-  const handleNewConnection = () => {
-    console.log("new connection");
-  };
+  // const handleNewConnection = () => {
+  //   console.log("new connection");
+  // };
 
-  const handleNotification = (message) => {
-    alert(message);
-  };
+  // const handleNotification = (message) => {
+  //   alert(message);
+  // };
 
-  useEffect(() => {
-    socket.on("connect", handleNewConnection);
+  // useEffect(() => {
+  //   socket.on("connect", handleNewConnection);
 
-    socket.on("notification", handleNotification);
+  //   socket.on("notification", handleNotification);
 
-    socket.on("message", handleNewMessage);
+  //   socket.on("message", handleNewMessage);
 
-    // clean up listeners on dismount
-    return () => {
-      socket.off("connect", handleNewConnection);
-      socket.off("notification", handleNotification);
-      socket.off("message", handleNewMessage);
-    };
-  }, []);
+  //   // clean up listeners on dismount
+  //   return () => {
+  //     socket.off("connect", handleNewConnection);
+  //     socket.off("notification", handleNotification);
+  //     socket.off("message", handleNewMessage);
+  //   };
+  // }, []);
 
   const onSendMessage = async (message) => {
     const name = userInfo && userInfo.name;
@@ -110,14 +163,28 @@ const Chat = (props) => {
     };
 
     console.log("sending...");
-    socket.emit("messageRoom", {
-      room: room,
-      message: newMessage,
-    });
+    // const channel = ably.channels.get(room);
+    // const result = await channel.publish("message", newMessage);
 
-    console.log("sending");
-    console.log(messages);
+    // setLastMessageId(result?.id);
+    // setMessages((messages) => [...messages, newMessage]);
+
+    // add to database and publish to ably channel
+    try {
+      await fetch("/api/newmessage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newMessage),
+      });
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
+
+    console.log("sent");
   };
+
   const handleSend = (e) => {
     e.preventDefault();
     if (inputMessage.trim()) {
@@ -132,6 +199,7 @@ const Chat = (props) => {
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   };
+
   return (
     <div className="flex flex-col w-screen h-screen font-serif bg-orange-50 items-center">
       <UserNav />

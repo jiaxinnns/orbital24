@@ -72,4 +72,4 @@ Check if the server is running, by checking the full message printed on the cons
 The console in your code editor should print ‘Server running on port 4000’ (among other things)
 If any error occurs regarding the port already being used, kill the port (replace 4000 with any port causing the issue)
 `npx kill-port 4000`
-Access the web app at http://localhost:5173 or whichever URL is provided in the terminal after running the development server.
+Access the web app at http://localhost:5173 or whichever URL is provided in the terminal after running the dev server.

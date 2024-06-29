@@ -31,6 +31,7 @@ export const MatchProvider = ({ children }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    // fetch all users
     const fetchUsers = async () => {
       try {
         const response = await fetch(
@@ -47,8 +48,10 @@ export const MatchProvider = ({ children }) => {
           throw new Error();
         } else {
           const data = await response.json();
-          // console.log(data);
-          setUsers(data);
+          console.log(data);
+          const filtered = data.filter((u) => u.id !== session.user.id);
+          console.log(filtered);
+          setUsers(filtered);
         }
       } catch (e) {
         console.log(e);
@@ -57,7 +60,7 @@ export const MatchProvider = ({ children }) => {
 
     fetchUsers();
     console.log(users);
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     // calculate a compatibility score for each user
@@ -69,6 +72,8 @@ export const MatchProvider = ({ children }) => {
       users &&
       userPreferences &&
       users.map((user) => {
+        // check if the current user has already sent a request to this user
+
         let count = 0;
         if (user.gender === userPreferences.gender) {
           count += 2;
@@ -83,15 +88,13 @@ export const MatchProvider = ({ children }) => {
 
     setScores(tempScores);
 
-    // console.log(scores);
+    console.log(scores);
 
     const tempPossMatches =
       scores &&
-      scores
-        .sort((a, b) => {
-          return b.score - a.score;
-        })
-        .slice(0, 9);
+      scores.sort((a, b) => {
+        return b.score - a.score;
+      });
 
     // console.log(tempPossMatches);
     setPossMatches(tempPossMatches);

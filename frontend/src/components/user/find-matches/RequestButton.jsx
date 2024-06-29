@@ -5,6 +5,8 @@ import { useToastContext } from "../../../contexts/user/ToastContext";
 const RequestButton = (props) => {
   const { session, userInfo, userPreferences, loading } = useAuth();
 
+  const [isSent, setIsSent] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const { showToast } = useToastContext();
@@ -41,7 +43,7 @@ const RequestButton = (props) => {
             },
             redirect: "follow",
             referrerPolicy: "no-referrer",
-            body: JSON.stringify({ id: request[0].id }),
+            body: JSON.stringify({ to: request[0].to, from: request[0].from }),
           }
         );
 
@@ -50,6 +52,8 @@ const RequestButton = (props) => {
         } else {
           throw new Error();
         }
+
+        showToast("Successfully matched.");
       } else {
         console.log("start");
         const response1 = await fetch(
@@ -77,9 +81,11 @@ const RequestButton = (props) => {
         } else {
           throw new Error();
         }
+
+        showToast("Request Sent");
       }
 
-      showToast("Request Sent");
+      setIsSent(true);
     } catch (e) {
       console.log(e);
       setIsLoading(false);
@@ -94,9 +100,10 @@ const RequestButton = (props) => {
       <button
         className="bg-orange-950 text-white rounded-full"
         onClick={handleClick}
+        disabled={isSent}
       >
         <p className="p-1 text-sm">
-          {isLoading ? "Sending..." : "Send Request"}
+          {isLoading ? "Sending..." : isSent ? "Request Sent" : "Send Request"}
         </p>
       </button>
     </div>

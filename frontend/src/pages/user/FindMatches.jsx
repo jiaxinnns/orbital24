@@ -9,7 +9,23 @@ import ProfileCard from "../../components/user/find-matches/ProfileCard";
 
 const FindMatches = () => {
   const { possMatches } = useMatches();
-  console.log(possMatches);
+
+  const { session, userInfo, userPreferences, loading } = useAuth();
+
+  // ignore users that we have already requested / denied
+  const filteredPossMatches =
+    possMatches &&
+    userInfo &&
+    possMatches.filter((u) => {
+      return (
+        // has a request been sent to that user before?
+        !userInfo.requested.includes(u.id) &&
+        // has this user been hidden before?
+        !userInfo.ignore.includes(u.id)
+      );
+    });
+
+  console.log(filteredPossMatches);
 
   return (
     <div className="flex flex-col w-screen h-screen font-serif bg-orange-50 items-center">
@@ -19,12 +35,19 @@ const FindMatches = () => {
         Browse users who are similar to your ideal study buddy.
       </div>
       <div className="flex flex-col w-1/2 gap-y-3 overflow-scroll">
-        {possMatches ? (
-          possMatches.map((pm, index) => {
+        {filteredPossMatches && filteredPossMatches.length > 0 ? (
+          filteredPossMatches.map((pm, index) => {
             return <ProfileCard pm={pm} key={index} />;
           })
         ) : (
-          <Card>Please refresh...</Card>
+          <Card>
+            <div className="flex flex-col p-5">
+              <div className="font-bold text-2xl">
+                There are no suitable matches right now.
+              </div>
+              <div>Please wait or try again later.</div>
+            </div>
+          </Card>
         )}
       </div>
       <div className="p-4 text-gray-600">

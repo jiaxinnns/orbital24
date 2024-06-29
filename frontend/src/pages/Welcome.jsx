@@ -26,33 +26,83 @@ const Welcome = () => {
   };
 
   return (
-    <div className="w-screen h-full grid grid-cols-2 bg-orange-100">
-      <img src={landingPage} className="h-full object-cover"></img>
-      <div className="flex flex-col justify-center items-center h-full w-full">
-        <div className="flex justify-center">
-          <img src={logo} className="w-1/3 flex"></img>
-        </div>
-        <div className="p-12 flex flex-col gap-2 justify-center">
-          <div className="font-serif text-3xl">Find a Study Buddy</div>
-          <p className="text-md text-gray-800">Feeling unmotivated?</p>
-          <p className="text-sm text-gray-800">
-            Find a study buddy from your faculty and with the same study
-            preferences as you!
-          </p>
-        </div>
-        <div className="flex gap-4 w-full pl-16 pr-16">
+    <div className="h-screen flex flex-col w-screen font-serif bg-orange-50">
+      <div className="flex w-full justify-end bg-orange-950 items-center text-2xl p-3 text-white">
+        <div className="">
           <button
             onClick={handleSignup}
-            className="bg-orange-200 hover:bg-yellow-800 hover:text-white basis-3/5 rounded-2xl"
+            className="bg-transparent border-none rounded-2xl"
           >
-            <p className="p-2">Register</p>
+            <p className="px-2">Register</p>
           </button>
+          |
           <button
             onClick={handleSignIn}
-            className="bg-white hover:bg-yellow-800 hover:text-white basis-2/5 rounded-2xl"
+            className="bg-transparent border-none rounded-2xl"
           >
-            <p className="p-2">Sign In</p>
+            <p className="px-2">Sign In</p>
           </button>
+        </div>
+      </div>
+      <div className="text-7xl italic pt-24">Feeling Unmotivated?</div>
+      <div className="text-3xl italic pt-6">
+        Find a study buddy to keep you in check and discuss schoolwork, in just
+        4 steps.
+      </div>
+
+      <div className="flex items-end h-full w-full p-24 px-56 gap-x-24">
+        <div className="h-full w-full pt-52 basis-1/4">
+          <div className="bg-orange-100 flex flex-col gap-y-3 h-full p-6">
+            <div className="font-bold text-2xl">1. Edit Preferences</div>
+            <div className="text-gray-800">
+              Specify the traits of your ideal study buddy, like their faculty
+              and gender.
+            </div>
+            <div className="text-gray-800">
+              You may edit these preferences anytime.
+            </div>
+          </div>
+        </div>
+        <div className="h-full w-full pt-16 basis-1/4">
+          <div className="bg-neutral-300 flex flex-col h-full gap-y-3 p-6">
+            <div className="font-bold text-2xl">2. Browse Users</div>
+            <div className="text-gray-800">
+              You will be recommended some users that are the most similar to
+              your ideal study buddy, in terms of their gender and field of
+              study.
+            </div>
+            <div className="text-gray-800">
+              You may send them a request if you'd like them to be your study
+              buddy.
+            </div>
+            <div className="text-gray-800">
+              Your profile may also be recommended to other users.
+            </div>
+          </div>
+        </div>
+        <div className="h-full w-full basis-1/4 pt-64">
+          <div className="bg-zinc-200 flex flex-col h-full basis-1/4 gap-y-3 p-6">
+            <div className="font-bold text-2xl">3. Match</div>
+            <div className="text-gray-800">
+              Check if any users have accepted your request, or have sent you a
+              request.
+            </div>
+            <div className="text-gray-800">
+              You can decline a request, or accept it to match with the user.
+            </div>
+          </div>
+        </div>
+        <div className="w-full h-full pt-36 basis-1/4">
+          <div className="bg-orange-100 flex flex-col h-full basis-1/4 gap-y-3 p-6">
+            <div className="font-bold text-2xl">4. Chat</div>
+            <div className="text-gray-800">
+              You may chat in real time with any user you have matched with.
+            </div>
+            <div className="text-gray-800">
+              You can arrange study dates or ask for help with schoolwork, while
+              staying semi-anonymous.
+            </div>
+          </div>
         </div>
       </div>
     </div>

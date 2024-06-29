@@ -120,7 +120,7 @@ const Matches = () => {
       </div>
 
       <div className="flex flex-col w-1/2 gap-y-3 overflow-scroll">
-        {matchedUsers ? (
+        {matchedUsers && matchedUsers.length > 0 ? (
           matchedUsers.map((pm, index) => {
             return <MatchCard pm={pm} key={index} />;
           })

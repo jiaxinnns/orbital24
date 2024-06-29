@@ -164,16 +164,15 @@ const Chat = (props) => {
     <div className="flex flex-col w-screen h-screen font-serif bg-orange-50 items-center">
       <UserNav />
       <div className="flex w-full h-full justify-center p-8">
-        <Card className="h-3/4 w-2/3 flex justify-center">
+        <Card className="h-3/4 w-2/3 flex ">
           <div className="flex flex-col w-full bg-orange-950 rounded-t-lg text-white p-4">
             <p className="text-2xl font-bold">{otherUser.name}</p>
             <p className="text-lg">
               {otherUser.faculty} | {otherUser.gender}
             </p>
           </div>
-          <div className="flex flex-col p-4 w-full overflow-auto">
-            {messages &&
-              messages.length > 0 &&
+          <div className="flex flex-col p-4 w-full h-full overflow-auto">
+            {messages && messages.length > 0 ? (
               messages.map((m, index) => (
                 <div
                   key={index}
@@ -191,12 +190,14 @@ const Chat = (props) => {
                     </p>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div className="bg-gray-200 rounded-2xl p-2">
+                Send a message to start the conversation.
+              </div>
+            )}
           </div>
-          <form
-            onSubmit={handleSend}
-            className="flex p-4 gap-x-6 justify-center w-full"
-          >
+          <form onSubmit={handleSend} className="flex p-4 gap-x-6 w-full">
             <input
               type="text"
               placeholder="Enter your message"

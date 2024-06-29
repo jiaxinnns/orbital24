@@ -151,34 +151,53 @@ app.get("/api/completerequestsfrom", async (req, res) => {
   data && res.json(data);
 });
 
-// complete existing request according to request ID
+// complete (ie. accept) existing request according to to & from ID
 app.post("/api/completerequest", async (req, res) => {
-  // console.log(req.query.email);
+  // update user table
+  const { data, error1 } = await supabase
+    .from("user_info")
+    .select()
+    .eq("id", req.body.to);
+
+  const requested = data[0] && data[0].requested;
+  requested && requested.push(req.body.from);
+
+  const { error2 } = await supabase
+    .from("user_info")
+    .update({
+      requested: requested,
+    })
+    .eq("id", req.body.to);
+
+  // update request table
   const { error } = await supabase
     .from("requests")
     .update({
       completed: true,
     })
-    .eq("id", req.body.id);
+    .eq("to", req.body.to)
+    .eq("from", req.body.from);
   error && res.send(error);
   !error && res.send("Accepted");
 });
 
 // decline existing request according to request ID
 app.post("/api/declinerequest", async (req, res) => {
+  // update requests table
   const { error } = await supabase
     .from("requests")
     .update({
       declined: true,
     })
     .eq("id", req.body.id);
+
   error && res.send(error);
   !error && res.send("Declined");
 });
 
 // add new request
 app.post("/api/newrequest", async (req, res) => {
-  // console.log(req.query.email);
+  // update request table
   const { error } = await supabase.from("requests").insert([
     {
       to: req.body.to,
@@ -187,13 +206,48 @@ app.post("/api/newrequest", async (req, res) => {
     },
   ]);
 
-  error && console.log(error);
-  !error && res.send("New request made");
+  // update user table
+  const { data, error1 } = await supabase
+    .from("user_info")
+    .select()
+    .eq("id", req.body.from);
+
+  const requested = data[0] && data[0].requested;
+  requested && requested.push(req.body.to);
+
+  const { error2 } = await supabase
+    .from("user_info")
+    .update({
+      requested: requested,
+    })
+    .eq("id", req.body.from);
+
+  !error && !error1 && !error2 && res.send("New request made");
+});
+
+// hide user
+app.post("/api/hide", async (req, res) => {
+  // update user table
+  const { data, error1 } = await supabase
+    .from("user_info")
+    .select()
+    .eq("id", req.body.from);
+
+  const ignore = data[0] && data[0].ignore;
+  ignore && ignore.push(req.body.to);
+
+  const { error2 } = await supabase
+    .from("user_info")
+    .update({
+      ignore: ignore,
+    })
+    .eq("id", req.body.from);
+
+  !error1 && !error2 && res.send("Hidden");
 });
 
 // fetch user according to email
 app.get("/api/users", async (req, res) => {
-  console.log(req.query.email);
   const { data, error } = await supabase
     .from("users")
     .select()
@@ -201,9 +255,33 @@ app.get("/api/users", async (req, res) => {
   data[0] && res.json([{ id: data[0].id }]);
 });
 
-// fetch random user info (limit of 50)
+// fetch random user info (limit of 20)
 app.get("/api/allusers", async (req, res) => {
-  const { data, error } = await supabase.from("user_info").select().range(0, 9);
+  // get number of rows
+
+  const { count, error1 } = await supabase
+    .from("user_info")
+    .select("*", { count: "exact", head: true });
+
+  console.log(count);
+
+  // default range
+  let start = 0;
+  let end = Math.min(count, 20) - 1;
+
+  // if more than 20 users, rng a starting point more than 20 away from the endpoint
+
+  if (count > 20) {
+    start = Math.floor(Math.random() * (count - 20));
+    end = start + 19;
+  }
+
+  const { data, error } = await supabase
+    .from("user_info")
+    .select()
+    .range(start, end);
+
+  console.log(data);
   data && res.json(data);
 });
 

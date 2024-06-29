@@ -37,9 +37,7 @@ const RequestCard = (props) => {
       }
       const data = await response.json();
 
-      console.log(data[0].id);
-
-      // complete the request based on ID
+      // complete the request based on to & from ID
       const response1 = await fetch(
         `${import.meta.env.VITE_APP_API_URL}/api/completerequest`,
         {
@@ -51,7 +49,7 @@ const RequestCard = (props) => {
           },
           redirect: "follow",
           referrerPolicy: "no-referrer",
-          body: JSON.stringify({ id: data[0].id }),
+          body: JSON.stringify({ from: data[0].from, to: data[0].to }),
         }
       );
 

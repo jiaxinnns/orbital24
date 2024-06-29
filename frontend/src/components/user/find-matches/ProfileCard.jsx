@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@chakra-ui/react";
 import logo from "../../../assets/logo.png";
 import RequestButton from "./RequestButton";
 import HideButton from "./HideButton";
 
 const ProfileCard = (props) => {
+  const [isHidden, setIsHidden] = useState(false);
+  const [isHiding, setIsHiding] = useState(false);
+
   return (
     <div>
       <Card
@@ -23,7 +26,7 @@ const ProfileCard = (props) => {
             </div>
             <div className="flex gap-x-2 justify-start pt-2">
               <RequestButton pm={props.pm} />
-              <HideButton />
+              <HideButton pm={props.pm} />
             </div>
           </div>
         </div>

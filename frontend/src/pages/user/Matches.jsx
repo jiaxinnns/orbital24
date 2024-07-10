@@ -26,7 +26,7 @@ const Matches = () => {
         if (session) {
           const response = await fetch(
             `${
-              import.meta.env.VITE_APP_API_URL || "http://localhost4000"
+              import.meta.env.VITE_APP_API_URL || "http://localhost:4000"
             }/api/completerequeststo?to=${session.user.id}`,
             {
               method: "GET",

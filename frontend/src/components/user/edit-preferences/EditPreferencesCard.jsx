@@ -40,11 +40,16 @@ const EditPreferencesCard = () => {
     { label: "No preference" },
   ];
 
-  const [selectedFaculty, setSelectedFaculty] = useState("No preference");
-  const [selectedGender, setSelectedGender] = useState("No preference");
-  const [selectedStudySpot, setSelectedStudySpot] = useState("No preference");
+  const { session, userInfo, userPreferences, loading } = useAuth();
 
-  const { session, loading } = useAuth();
+  const [selectedFaculty, setSelectedFaculty] = useState(
+    userPreferences?.faculty
+  );
+  const [selectedGender, setSelectedGender] = useState(userPreferences?.gender);
+  const [selectedStudySpot, setSelectedStudySpot] = useState(
+    userPreferences?.study_spot
+  );
+
   const navigate = useNavigate();
   const { showToast } = useToastContext();
 
@@ -107,7 +112,13 @@ const EditPreferencesCard = () => {
             <Select
               ref={facultyRef}
               options={faculties}
-              placeholder={<div>Preferred Faculty</div>}
+              placeholder={
+                <div>
+                  {userPreferences
+                    ? userPreferences.faculty
+                    : "Preferred faculty"}
+                </div>
+              }
               className="w-1/2 rounded-md"
               required
               onChange={(choice) => {
@@ -118,7 +129,13 @@ const EditPreferencesCard = () => {
 
             <Select
               options={genders}
-              placeholder={<div>Preferred Gender</div>}
+              placeholder={
+                <div>
+                  {userPreferences
+                    ? userPreferences.gender
+                    : "Preferred gender"}
+                </div>
+              }
               className="w-1/2 rounded-md"
               required
               onChange={(choice) => {
@@ -130,7 +147,13 @@ const EditPreferencesCard = () => {
           <div className="flex w-full justify-center">
             <Select
               options={studySpots}
-              placeholder={<div>Preferred Study Spot in NUS</div>}
+              placeholder={
+                <div>
+                  {userPreferences
+                    ? userPreferences.study_spot
+                    : "Preferred study spot in NUS"}
+                </div>
+              }
               className="w-full rounded-md"
               required
               onChange={(choice) => {

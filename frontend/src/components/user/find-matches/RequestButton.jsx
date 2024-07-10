@@ -31,7 +31,6 @@ const RequestButton = (props) => {
       console.log(request);
       // if there is already a request, mark this request as completed
       if (request.length !== 0) {
-        console.log("req sent before");
         const response1 = await fetch(
           `${import.meta.env.VITE_APP_API_URL}/api/completerequest`,
           {

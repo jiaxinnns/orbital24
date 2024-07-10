@@ -20,6 +20,7 @@ import Requests from "./pages/user/Requests";
 import { RequestProvider } from "./contexts/user/RequestContext";
 import Matches from "./pages/user/Matches";
 import Chat from "./pages/user/Chat";
+import Timer from "./pages/user/Timer";
 
 const App = () => {
   return (
@@ -64,6 +65,10 @@ const App = () => {
                       <Route
                         path="/chat"
                         element={<PrivateRoute component={<Chat />} />}
+                      />
+                      <Route
+                        path="/timer"
+                        element={<PrivateRoute component={<Timer />} />}
                       />
                     </Routes>
                   </Router>

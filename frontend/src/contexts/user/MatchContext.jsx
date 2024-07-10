@@ -48,9 +48,9 @@ export const MatchProvider = ({ children }) => {
           throw new Error();
         } else {
           const data = await response.json();
-          console.log(data);
+          // console.log(data);
           const filtered = data.filter((u) => u.id !== session.user.id);
-          console.log(filtered);
+          // console.log(filtered);
           setUsers(filtered);
         }
       } catch (e) {
@@ -59,7 +59,7 @@ export const MatchProvider = ({ children }) => {
     };
 
     fetchUsers();
-    console.log(users);
+    // console.log(users);
   }, [session]);
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export const MatchProvider = ({ children }) => {
 
     setScores(tempScores);
 
-    console.log(scores);
+    // console.log(scores);
 
     const tempPossMatches =
       scores &&

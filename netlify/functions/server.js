@@ -23,9 +23,7 @@ const ably = new Ably.Realtime(process.env.VITE_APP_ABLY_API_KEY);
 
 const app = express();
 
-//app.use(bodyParser.json());
 app.use(express.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
 
 const corsOptions = {
   origin: "*",
@@ -35,30 +33,54 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-//app.use("/", router);
 
 const port = 4000;
 
+// get timer logs based on user ID
+app.get("/api/getlogs", async (req, res) => {
+  const { user_id } = req.query;
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const { data, error } = await supabase
+    .from("timer")
+    .select()
+    .eq("user_id", user_id)
+    .gte("created_at", oneWeekAgo.toISOString());
+
+  if (error) {
+    console.error("Error fetching logs:", error);
+    res.status(500).json({ error: error.message });
+  } else {
+    res.status(200).json(data);
+  }
+});
+
+// add new log to timer
+app.post("/api/newtimer", async (req, res) => {
+  try {
+    // Insert message into the database
+    const { data, error } = await supabase.from("timer").insert([
+      {
+        created_at: new Date(),
+        ended_at: new Date(),
+        user_id: req.body.id,
+        user_name: req.body.name,
+        duration: req.body.duration,
+      },
+    ]);
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.error("Error saving record:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // add new message to chat
 app.post("/api/newmessage", async (req, res) => {
-  // const { chat_id, sender_id, sender_name, message } = req.body;
-  // const { data, error } = await supabase.from("chat_messages").insert([
-  //   {
-  //     chat_id: chat_id,
-  //     sender_id: sender_id,
-  //     sender_name: sender_name,
-  //     message: message,
-  //     timestamp: new Date(),
-  //   },
-  // ]);
-
-  // if (error) {
-  //   console.error("Error inserting message:", error);
-  //   res.status(500).json({ error: error.message });
-  // } else {
-  //   res.status(200).json(data);
-  // }
-  console.log("TEST");
   const { chat_id, sender_id, sender_name, message, timestamp } = req.body;
 
   try {

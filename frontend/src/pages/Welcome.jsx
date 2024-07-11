@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { Card, CardHeader, Link as ChakraLink } from "@chakra-ui/react";
-import landingPage from "../assets/landingPage.png";
+import landingPage from "../assets/landingPage.jpg";
 import logo from "../assets/logo.png";
 
 import Home from "./user/Home";
@@ -44,7 +44,8 @@ const Welcome = () => {
           </button>
         </div>
       </div>
-      <div className="text-7xl italic pt-24">Feeling Unmotivated?</div>
+      <img src={landingPage} className="h-full w-full object-cover"></img>
+      {/* <div className="text-7xl italic pt-24">Feeling Unmotivated?</div>
       <div className="text-3xl italic pt-6">
         Find a study buddy to keep you in check and discuss schoolwork, in just
         4 steps.
@@ -104,7 +105,7 @@ const Welcome = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

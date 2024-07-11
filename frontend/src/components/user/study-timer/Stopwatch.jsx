@@ -53,13 +53,18 @@ const Stopwatch = () => {
           };
 
           try {
-            await fetch(`${"http://localhost:4000"}/api/newtimer`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newLog),
-            });
+            await fetch(
+              `${
+                import.meta.env.VITE_APP_API_URL || "http://localhost:4000"
+              }/api/newtimer`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newLog),
+              }
+            );
           } catch (error) {
             console.error("Error saving response:", error);
           }

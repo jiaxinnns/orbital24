@@ -90,7 +90,9 @@ const Leaderboard = () => {
       if (matches && matches.length > 0) {
         const fetchLogs = async (m) => {
           const response = await fetch(
-            `${"http://localhost:4000"}/api/getlogs?user_id=${m}`,
+            `${
+              import.meta.env.VITE_APP_API_URL || "http://localhost:4000"
+            }/api/getlogs?user_id=${m}`,
             {
               method: "GET",
               headers: {

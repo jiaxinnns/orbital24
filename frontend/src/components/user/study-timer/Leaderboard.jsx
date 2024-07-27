@@ -89,6 +89,7 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       if (matches && matches.length > 0) {
         const fetchLogs = async (m) => {
+          if (!m) return;
           const response = await fetch(
             `${
               import.meta.env.VITE_APP_API_URL || "http://localhost:4000"
@@ -136,7 +137,7 @@ const Leaderboard = () => {
     };
     fetchLeaderboard();
 
-    // console.log(leaderboard);
+    console.log(leaderboard);
   }, [matches]);
 
   return (
@@ -146,7 +147,7 @@ const Leaderboard = () => {
         <div className="text-lg text-gray-500">for the last 7 days.</div>
       </div>
 
-      {leaderboard &&
+      {leaderboard && leaderboard.length > 0 ? (
         leaderboard.map((l, index) => (
           <Card
             direction={{ base: "column", sm: "row" }}
@@ -165,7 +166,10 @@ const Leaderboard = () => {
               </div>
             </div>
           </Card>
-        ))}
+        ))
+      ) : (
+        <Card>Your friends haven't been active.</Card>
+      )}
     </div>
   );
 };

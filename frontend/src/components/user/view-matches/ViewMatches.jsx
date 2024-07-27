@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from "react";
 
-import { useRequests } from "../../contexts/user/RequestContext";
-import UserNav from "../../components/user/nav/UserNav";
+import { useRequests } from "../../../contexts/user/RequestContext";
+
 import { Card } from "@chakra-ui/react";
-import ProfileCard from "../../components/user/find-matches/ProfileCard";
-import RequestCard from "../../components/user/view-requests/RequestCard";
-import { useAuth } from "../../contexts/auth/AuthContext";
+import { useAuth } from "../../../contexts/auth/AuthContext";
+
 import { createClient } from "@supabase/supabase-js";
-import MatchCard from "../../components/user/view-matches/MatchCard";
-import ViewMatches from "../../components/user/view-matches/ViewMatches";
+import MatchCard from "./MatchCard";
 
 const supabase = createClient(
   import.meta.env.VITE_APP_SUPABASE_URL,
   import.meta.env.VITE_APP_ANON_KEY
 );
 
-const Matches = () => {
+const ViewMatches = (props) => {
   const { session, userInfo, userPreferences, loading } = useAuth();
   const [matches, setMatches] = useState([]);
   const [matchedUsers, setMatchedUsers] = useState();
@@ -111,17 +109,29 @@ const Matches = () => {
     };
     fetchUsers();
   }, [matches]);
-
   return (
-    <div className="flex flex-col w-screen h-screen font-serif bg-orange-50 items-center">
-      <UserNav />
-      <div className="text-4xl pt-6 pr-6 pl-6 font-bold">View Matches</div>
-      <div className="text-gray-700 text-xl p-6">
-        Users you have successfully matched with.
+    <div className="flex flex-col w-full h-full items-center">
+      <div
+        className={`flex flex-col h-full gap-y-3 overflow-scroll ${
+          props.size == "small" ? "w-1/2" : "w-full"
+        }`}
+        // style={{ maxHeight: "55rem" }}
+      >
+        {matchedUsers && matchedUsers.length > 0 ? (
+          matchedUsers.map((pm, index) => {
+            return <MatchCard pm={pm} key={index} />;
+          })
+        ) : (
+          <Card>
+            <div className="flex flex-col p-5">
+              <div className="font-bold text-2xl">You have no matches yet.</div>
+              <div>Find new matches with the 'Find Matches' function.</div>
+            </div>
+          </Card>
+        )}
       </div>
-      <ViewMatches size="small" />
     </div>
   );
 };
 
-export default Matches;
+export default ViewMatches;

@@ -36,11 +36,57 @@ app.use(cors(corsOptions));
 
 const port = 4000;
 
+// prompt chatGPT
+app.post("/api/chatbot", async (req, res) => {
+  const { message } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: "Message is required" });
+  }
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.VITE_APP_OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a helpful assistant with the role of answering queries regarding academics and school life in the National University of Singapore. You will only answer queries related to this school. Answer in paragraphs and no weird formatting. Make your answers specific to NUS ONLY",
+          },
+          { role: "user", content: message },
+        ],
+        max_tokens: 150,
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log(data.choices[0].message.content.trim());
+    if (!data.choices || !data.choices.length) {
+      console.error("Invalid response structure from OpenAI:", data);
+      return res
+        .status(500)
+        .json({ error: "Invalid response structure from OpenAI" });
+    }
+    const botResponse = data.choices[0].message.content.trim();
+    res.status(200).json({ bot: botResponse });
+  } catch (error) {
+    console.error("Error fetching response from OpenAI:", error);
+    res.status(500).json({ error: "Failed to fetch response from OpenAI" });
+  }
+});
+
 // get timer logs based on user ID
 app.get("/api/getlogs", async (req, res) => {
   const { user_id } = req.query;
   const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 30);
 
   const { data, error } = await supabase
     .from("timer")

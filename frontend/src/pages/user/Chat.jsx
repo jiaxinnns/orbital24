@@ -122,13 +122,6 @@ const Chat = (props) => {
       timestamp: new Date(),
     };
 
-    console.log("sending...");
-    // const channel = ably.channels.get(room);
-    // const result = await channel.publish("message", newMessage);
-
-    // setLastMessageId(result?.id);
-    // setMessages((messages) => [...messages, newMessage]);
-
     // add to database and publish to ably channel
     try {
       await fetch("/api/newmessage", {
@@ -141,8 +134,6 @@ const Chat = (props) => {
     } catch (error) {
       console.error("Error saving message:", error);
     }
-
-    console.log("sent");
   };
 
   const handleSend = (e) => {

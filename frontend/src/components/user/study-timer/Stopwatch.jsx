@@ -94,7 +94,7 @@ const Stopwatch = () => {
             {!isRunning && (
               <div
                 className="h-8 w-8 rounded-full z-100
-           bg-gray-300 border-4 border-white"
+                bg-gray-300 border-4 border-white"
                 ref={draggableRef}
                 style={{
                   position: "absolute",

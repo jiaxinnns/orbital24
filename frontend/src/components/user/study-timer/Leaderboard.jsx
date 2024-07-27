@@ -141,7 +141,7 @@ const Leaderboard = () => {
   }, [matches]);
 
   return (
-    <div className="w-full h-full p-12 flex flex-col gap-y-4 justify-center">
+    <div className="w-full h-full pl-12 pr-12 pb-12 flex flex-col gap-y-4 justify-center">
       <div className="text-3xl font-bold">
         Leaderboard
         <div className="text-lg text-gray-500">for the last 7 days.</div>

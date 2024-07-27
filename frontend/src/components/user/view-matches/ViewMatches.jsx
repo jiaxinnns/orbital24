@@ -110,26 +110,24 @@ const ViewMatches = (props) => {
     fetchUsers();
   }, [matches]);
   return (
-    <div className="flex flex-col w-full h-full items-center">
-      <div
-        className={`flex flex-col h-full gap-y-3 overflow-scroll ${
-          props.size == "small" ? "w-1/2" : "w-full"
-        }`}
-        // style={{ maxHeight: "55rem" }}
-      >
-        {matchedUsers && matchedUsers.length > 0 ? (
-          matchedUsers.map((pm, index) => {
-            return <MatchCard pm={pm} key={index} />;
-          })
-        ) : (
-          <Card>
-            <div className="flex flex-col p-5">
-              <div className="font-bold text-2xl">You have no matches yet.</div>
-              <div>Find new matches with the 'Find Matches' function.</div>
-            </div>
-          </Card>
-        )}
-      </div>
+    <div
+      className={`flex flex-col gap-y-3 overflow-scroll ${
+        props.size == "small" ? "w-1/2" : "w-full"
+      }`}
+      // style={{ maxHeight: "55rem" }}
+    >
+      {matchedUsers && matchedUsers.length > 0 ? (
+        matchedUsers.map((pm, index) => {
+          return <MatchCard pm={pm} key={index} />;
+        })
+      ) : (
+        <Card>
+          <div className="flex flex-col p-5">
+            <div className="font-bold text-2xl">You have no matches yet.</div>
+            <div>Find new matches with the 'Find Matches' function.</div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 };

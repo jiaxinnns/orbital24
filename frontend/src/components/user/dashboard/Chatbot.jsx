@@ -47,14 +47,17 @@ const Chatbot = () => {
 
   return (
     <div className="h-full w-full flex justify-center">
-      <Card className="h-full w-full">
+      <Card
+        className="h-full w-full"
+        style={{ maxHeight: "48rem", minHeight: "36rem" }}
+      >
         <div className="flex flex-col w-full bg-orange-950 rounded-t-lg text-white p-4">
           <p className="text-2xl font-bold">AI helper</p>
           <p className="text-lg">Ask me anything related to NUS!</p>
         </div>
         <div
           className="flex flex-col p-4 h-full w-full overflow-auto "
-          style={{ maxHeight: "36rem", minHeight: "36rem" }}
+          style={{ maxHeight: "36rem" }}
         >
           {messages && messages.length > 0 ? (
             messages.map((m, index) => (

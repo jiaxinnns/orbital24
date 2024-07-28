@@ -17,7 +17,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import ViewMatches from "../../components/user/view-matches/ViewMatches";
-import { View } from "@react-three/drei";
 
 const Home = () => {
   const { session, userInfo, userPreferences, loading } = useAuth();

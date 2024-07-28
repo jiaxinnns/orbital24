@@ -36,4 +36,9 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["express"],
   },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./tests/setup",
+  },
 });

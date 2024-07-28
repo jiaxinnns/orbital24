@@ -4,8 +4,6 @@ import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import { useNavigate, Navigate, redirect, Link } from "react-router-dom";
 import Cookies from "js-cookie";
-import axios from "axios";
-import axiosInstance from "../../axiosConfig";
 import toast, { Toaster } from "react-hot-toast";
 import { Link as ChakraLink, Text } from "@chakra-ui/react";
 

@@ -1,9 +1,6 @@
 import React, { useRef, Suspense } from "react";
 import SignInCard from "../../components/auth/SignInCard";
 
-import CafeGraphic from "../../assets/SignupCafe.png";
-import { Canvas } from "@react-three/fiber";
-import Sky from "../../models/Sky";
 import SignupGraphic from "../../assets/SignupGraphic.jpeg";
 import logo from "../../assets/logo.png";
 

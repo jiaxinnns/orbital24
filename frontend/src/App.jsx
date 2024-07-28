@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
+import { PrimeReactProvider } from "primereact/api";
 
 import "./App.css";
 import Home from "./pages/user/Home";
@@ -9,7 +8,6 @@ import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import Welcome from "./pages/Welcome";
 import EditPreferences from "./pages/user/EditPreferences";
-import { SignIn } from "@supabase/auth-ui-react";
 import PrivateRoute from "./PrivateRoute";
 import { AuthProvider } from "./contexts/auth/AuthContext";
 import { ToastProvider } from "./contexts/user/ToastContext";

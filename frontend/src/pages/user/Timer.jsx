@@ -10,7 +10,9 @@ const Timer = () => {
 
       <div className="grid grid-cols-2 h-full w-full">
         <Stopwatch />
-        <Leaderboard />
+        <div className="p-3">
+          <Leaderboard />
+        </div>
       </div>
     </div>
   );
